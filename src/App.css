@@ -1,0 +1,239 @@
+.main {
+  margin-top: 90px;
+}
+
+.components {
+  margin-top: 70px;
+}
+
+body {
+  font-family: Google Sans, Helvetica Neue, sans-serif; /* Default font */
+  background-color: #f8f9fa; /* Light background */
+  color: #333; /* Dark text color */
+  height: 100%;
+  overflow-x: hidden;
+}
+
+h2 {
+  font-family: Google Sans, Helvetica Neue, sans-serif; /* Font for headings */
+  color: #007bff; /* Primary color for headings */
+}
+
+.btn {
+  font-family: Google Sans, Helvetica Neue, sans-serif; /* Button font */
+}
+
+.input {
+  border: 1px solid #007bff; /* Light border */
+}
+
+.text-danger {
+  font-weight: 700; /* Make error text bold */
+}
+
+.btn {
+  background-color: #007bff; /* Primary color */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  border-radius: 25px; /* Rounded corners */
+  padding: 10px 20px; /* Padding for button */
+  font-size: 16px; /* Font size */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+}
+
+.btn:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+.btn:disabled {
+  background-color: #cccccc; /* Gray background for disabled state */
+  color: #666666; /* Gray text for disabled state */
+  cursor: not-allowed; /* Change cursor */
+}
+
+
+.home-h {
+  background: linear-gradient(to right, #4285F4, #A142E2, #F44336);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.home-p {
+  color: grey;
+}
+
+.home-para {
+  color: grey;
+  font-size: 1.4rem;
+
+}
+
+/* For WebKit browsers (Chrome, Safari) */
+.container {
+  overflow-y: scroll; /* Enable scrolling */
+}
+
+.container::-webkit-scrollbar {
+  width: 0px; /* Hide scrollbar */
+  background-color: #f8f9fa;; /* Optional: to make sure the background is transparent */
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: #f8f9fa;; /* Optional: for the scrollbar thumb */
+}
+
+/* For Firefox */
+.container {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: transparent transparent; /* Hide scrollbar */
+}
+
+/* For other browsers or fallback */
+.container {
+  overflow: -moz-scrollbars-none; /* Hide scrollbar for older versions of Firefox */
+}
+
+/* Prevent the page content from moving down when the navbar is expanded */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: #f8f9fa !important; /* Transparent background for the navbar */
+  position: fixed; /* Fixed position at the top of the viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Ensure it appears on top of other content */
+  height: auto;
+}
+
+.navbar-toggler-icon {
+  height: 1rem;
+}
+
+.navbar-collapse {
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Make sure it appears on top of other content */
+}
+
+.navbar-toggler{
+  margin-right: 16px;
+  border: none;
+  color: #f8f9fa;
+  z-index: 1001;
+}
+
+.page-e {
+  margin-top: 94px;
+}
+
+/* Ensure the container spans the full width */
+.container {
+  max-width: 100%;
+  padding: 0 15px; /* Add padding to avoid content touching edges */
+  padding-bottom: 80px; /* Ensure there's space for the fixed input bar */
+}
+
+/* Ensure the input container does not overlap content */
+.input-container {
+  width: 100%;
+  bottom: 0;
+  position: fixed;
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  z-index: 1000; /* Ensure it's on top of other elements */
+}
+
+.set-img {
+  width: 400px;
+  height: 'auto';
+}
+
+.hero-section {
+  margin-bottom: -62px;
+    margin-top: 178px;
+}
+
+.set {
+  margin-top: 50px;
+}
+
+/* Media query for devices with a maximum width of 768px */
+@media (max-width: 990px) {
+  .navbar-collapse {
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff; /* Ensure the background color matches or is appropriate */
+    z-index: 1000; /* Make sure it appears on top of other content */
+  }
+
+  .nav-h {
+    margin-left: 2rem !important;
+    margin-right: 3rem !important;
+  }
+
+  .nav-i {
+    margin-left: 2rem !important;
+    margin-right: 3rem !important;
+  }
+}
+
+.btn-readmore {
+  margin-left: -12px;
+}
+
+.loading {
+  height: 54px;
+  margin: 200px;
+}
+
+.news-h {
+  height: 56px;
+    margin-top: 112px;
+}
+
+.title-limit {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description-limit {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 5 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.news-h {
+  margin-top: 100px;
+}
+
+.row {
+  margin-top: 14px;
+}
+
+.spinner-overlay {
+  position: fixed; /* Fixed positioning to cover the entire viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex; /* Centering the spinner */
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* Make sure the spinner is on top */
+}
+
+.spinner-hidden {
+  display: none; /* Hide the spinner when loading is done */
+}
