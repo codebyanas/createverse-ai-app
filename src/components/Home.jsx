@@ -8,7 +8,7 @@ const HomePage = () => {
                 {/* Hero Section */}
                 <section className="hero-section text-center">
                     <div className="container my-4">
-                        <h1>Welcome to <span className="home-h">Createverse Studio</span></h1>
+                        <h1>Welcome to <span className="home-h">Createverse </span></h1>
                         <p className="home-para">AI-powered tools for generating images, icons, backgrounds, PDFs, and more!</p>
                         <Link to="/image-generator" className="btn btn-primary">Start Creating</Link>
                     </div>

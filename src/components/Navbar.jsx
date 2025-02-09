@@ -31,7 +31,7 @@ export default function Navbar() {
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-transparent fixed-top">
-            <Link className="navbar-brand mx-5 home-h nav-h" to="/home">Createverse Studio</Link>
+            <Link className="navbar-brand mx-5 home-h nav-h" to="/home">Createverse </Link>
             <button
                 className="navbar-toggler"
                 type="button"
