@@ -15,30 +15,30 @@ const App = () => {
   useEffect(() => {
     switch (location.pathname) {
       case '/':
-        document.title = 'Home | EditPro Studio';
+        document.title = 'Home | Createverse Studio';
         break;
       case '/home':
-        document.title = 'Home | EditPro Studio';
+        document.title = 'Home | Createverse Studio';
         break;
       case '/image-generator':
-        document.title = 'Image Generator | EditPro Studio';
+        document.title = 'Image Generator | Createverse Studio';
         break;
       case '/icon-generator':
-        document.title = 'Icon Generator | EditPro Studio';
+        document.title = 'Icon Generator | Createverse Studio';
         break;
       case '/pdf-generator':
-        document.title = 'PDF Generator | EditPro Studio';
+        document.title = 'PDF Generator | Createverse Studio';
         break;
       case '/background-generator':
-        document.title = 'Background Generator | EditPro Studio';
+        document.title = 'Background Generator | Createverse Studio';
         break;
       case '/background-remover':
-        document.title = 'Background Remover | EditPro Studio';
+        document.title = 'Background Remover | Createverse Studio';
         break;
-        document.title = 'News Headlines | EditPro Studio';
+        document.title = 'News Headlines | Createverse Studio';
         break;
       default:
-        document.title = 'Default Title | EditPro Studio';
+        document.title = 'Default Title | Createverse Studio';
     }
   }, [location]);
 

@@ -143,7 +143,7 @@ const IconGenerator = () => {
             <input
               type="text"
               className="form-control me-2 flex-grow-1"
-              placeholder="Message EditPro Studio"
+              placeholder="Message Createverse Studio"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyDown} // Add onKeyDown event handler
