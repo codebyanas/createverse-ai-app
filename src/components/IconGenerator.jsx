@@ -1,53 +1,37 @@
 import React, { useState } from 'react';
+import { InferenceClient } from '@huggingface/inference';
+
+const hf = new InferenceClient(import.meta.env.VITE_HUGGING_FACE_TOKEN);
 
 const IconGenerator = () => {
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [resultImage, setResultImage] = useState(null); // For the processed image
-  const huggingfacetoken = import.meta.env.VITE_HUGGING_FACE_TOKEN;
+  const [resultImage, setResultImage] = useState(null);
   const bgremoverapi = import.meta.env.VITE_REMOVE_BACKGROUND_API_KEY;
-
-  async function query(data) {
-    try {
-      const response = await fetch(
-        "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",
-        {
-          headers: {
-            Authorization: `Bearer ${huggingfacetoken}`,
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage || 'Failed to generate image.');
-      }
-
-      const result = await response.blob();
-      return URL.createObjectURL(result);
-    } catch (err) {
-      throw err;
-    }
-  }
 
   const handleGenerate = async () => {
     setLoading(true);
     setError('');
-    setResultImage(null); // Reset the processed image
+    setResultImage(null);
 
     const searchText = `${inputText}, regular_icon`;
 
     try {
-      const imgUrl = await query({ inputs: searchText });
-      await removeBackground(imgUrl); // Automatically remove background
+      const responseBlob = await hf.textToImage({
+        model: 'black-forest-labs/FLUX.1-schnell',
+        inputs: searchText,
+      });
+
+      const imgUrl = URL.createObjectURL(responseBlob);
+      await removeBackground(imgUrl);
+      setInputText('');
     } catch (err) {
-      setError(err.message);
+      console.error('Icon Generator HF Error Details:', err);
+      setError('Oops! Something went wrong on our end. Please try again later.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const removeBackground = async (imgUrl) => {
@@ -72,8 +56,9 @@ const IconGenerator = () => {
       } else {
         throw new Error(`${bgResponse.status}: ${bgResponse.statusText}`);
       }
-    } catch (error) {
-      console.error('Error removing background:', error);
+    } catch (err) {
+      console.error('Error removing background:', err);
+      setError('Oops! Something went wrong on our end. Please try again later.');
     }
   };
 
@@ -81,14 +66,14 @@ const IconGenerator = () => {
     if (resultImage) {
       const a = document.createElement('a');
       a.href = resultImage;
-      a.download = 'generated_icon.png'; // Filename for the download
+      a.download = 'generated_icon.png';
       a.click();
     }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // Prevent default Enter key behavior (like form submission)
+      e.preventDefault();
       if (!loading && inputText.trim()) {
         handleGenerate();
       }
@@ -96,19 +81,17 @@ const IconGenerator = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" style={{ paddingBottom: '80px' }}>
       <h2 className="text-center mb-4 set">Generate Icon from Text</h2>
       <p className="text-center mb-4">
         Enter a description of the icon you'd like to generate, such as "A robot holding a sign".
       </p>
 
-      <div className="text-center mb-5">
-        {error && (
-          <div className="mt-4" aria-live="assertive">
-            <p>Oops! Something went wrong on our end. Please try again later.</p>
-          </div>
-        )}
-      </div>
+      {error && (
+        <div className="mt-4 text-center text-secondary" aria-live="assertive">
+          <p>{error}</p>
+        </div>
+      )}
 
       {resultImage && (
         <div className="mt-5 text-center">
@@ -124,41 +107,38 @@ const IconGenerator = () => {
         </div>
       )}
 
-      {/* Fixed input and button at the bottom */}
-              {/* Search bar at the bottom */}
-              <div
-          className="input-container d-flex justify-content-center align-items-center"
-          style={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: '10px',
-            backgroundColor: '#f8f9fa',
-            borderTop: '1px solid #dee2e6',
-            zIndex: 1000, // Ensure it's on top
-          }}
-        >
-          <div className="d-flex w-100">
-            <input
-              type="text"
-              className="form-control me-2 flex-grow-1"
-              placeholder="Message Createverse "
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyDown={handleKeyDown} // Add onKeyDown event handler
-            />
-            <button
-              className="btn btn-primary"
-              onClick={handleGenerate}
-              disabled={loading || !inputText.trim()}
-              style={{ marginLeft: '10px' }}
-            >
-              {loading ? 'Generating...' : 'Generate'}
-            </button>
-          </div>
+      <div
+        className="input-container d-flex justify-content-center align-items-center"
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '10px',
+          backgroundColor: '#f8f9fa',
+          borderTop: '1px solid #dee2e6',
+          zIndex: 1000,
+        }}
+      >
+        <div className="d-flex w-100">
+          <input
+            type="text"
+            className="form-control me-2 flex-grow-1"
+            placeholder="Message Createverse "
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <button
+            className="btn btn-primary"
+            onClick={handleGenerate}
+            disabled={loading || !inputText.trim()}
+            style={{ marginLeft: '10px' }}
+          >
+            {loading ? 'Generating...' : 'Generate'}
+          </button>
         </div>
-
+      </div>
     </div>
   );
 };
