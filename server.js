@@ -14,8 +14,8 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const hf = new InferenceClient(process.env.HUGGING_FACE_TOKEN);
 
-// 1. Generate Image Endpoint
-app.post('/api/generate-image', async (req, res) => {
+// 1. Generate Image Endpoint (Handles both Vercel & Local routes)
+app.post(['/api/generate-image', '/generate-image'], async (req, res) => {
   try {
     const { prompt, model, prefix } = req.body || {};
     if (!prompt) return res.status(400).json({ error: 'Prompt is required' });
@@ -35,8 +35,8 @@ app.post('/api/generate-image', async (req, res) => {
   }
 });
 
-// 2. Remove Background Endpoint
-app.post('/api/remove-bg', async (req, res) => {
+// 2. Remove Background Endpoint (Handles both Vercel & Local routes)
+app.post(['/api/remove-bg', '/remove-bg'], async (req, res) => {
   try {
     const { image_b64 } = req.body || {};
     if (!image_b64) return res.status(400).json({ error: 'Image base64 is required' });
