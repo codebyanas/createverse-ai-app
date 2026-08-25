@@ -1,40 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const BackgroundRemover = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [resultImage, setResultImage] = useState(null);
-  const bgremoverapi = 'rksVHYCc6MWNT3Mbux3PGUbc';
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
+    setError("");
+  };
+
+  // Convert File/Blob to Base64 String
+  const fileToBase64 = (fileData) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(fileData);
+    });
   };
 
   const handleRemoveBg = async () => {
-    // eslint-disable-next-line
     if (!file) return;
 
     setLoading(true);
-    const formData = new FormData();
-    formData.append('size', 'auto');
-    formData.append('image_file', file);
+    setError("");
+    setResultImage(null);
 
     try {
-      const response = await fetch('https://api.remove.bg/v1.0/removebg', {
-        method: 'POST',
-        headers: { 'X-Api-Key': `${bgremoverapi}` },
-        body: formData,
+      const base64Image = await fileToBase64(file);
+
+      const response = await fetch("/api/remove-bg", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image_b64: base64Image }),
       });
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        setResultImage(url);
-      } else {
-        throw new Error(`${response.status}: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error("Failed to remove background");
       }
-    } catch (error) {
-      console.error('Error removing background:', error);
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setResultImage(url);
+    } catch (err) {
+      console.error("Background Remover Error:", err);
+      setError("Oops! Something went wrong on our end. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -42,9 +54,9 @@ const BackgroundRemover = () => {
 
   const handleDownload = () => {
     if (resultImage) {
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = resultImage;
-      a.download = 'no-bg.png'; // Set the filename for the download
+      a.download = "no-bg.png";
       a.click();
     }
   };
@@ -69,22 +81,27 @@ const BackgroundRemover = () => {
         <button
           className="btn btn-primary"
           onClick={handleRemoveBg}
-          disabled={!file || loading} // Disabled if no file is selected or if loading
+          disabled={!file || loading}
         >
-          {loading ? 'Removing Background...' : 'Remove Background'}
+          {loading ? "Removing Background..." : "Remove Background"}
         </button>
       </div>
 
+      {error && (
+        <div className="mt-4 text-center text-secondary" aria-live="assertive">
+          <p>{error}</p>
+        </div>
+      )}
 
       {resultImage && (
         <div className="mt-5 text-center">
           <h2>Processed Image</h2>
-          <div className="mt-3" style={{ width: '400px', height: '400px', margin: '0 auto' }}>
+          <div className="mt-3" style={{ width: "400px", height: "400px", margin: "0 auto" }}>
             <img
               src={resultImage}
-              alt="Processed Image"
+              alt="Processed Result"
               className="img-fluid"
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
           </div>
 

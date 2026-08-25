@@ -1,31 +1,34 @@
-import React, { useState } from 'react';
-import { InferenceClient } from '@huggingface/inference';
-
-const hf = new InferenceClient(import.meta.env.VITE_HUGGING_FACE_TOKEN);
+import React, { useState } from "react";
 
 const BackgroundGenerator = () => {
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleGenerate = async () => {
     setLoading(true);
-    setError('');
+    setError("");
     setImage(null);
 
     try {
-      const responseBlob = await hf.textToImage({
-        model: 'black-forest-labs/FLUX.1-schnell',
-        inputs: `generate a background of ${inputText}`,
+      const response = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: `generate a background of ${inputText}` }),
       });
 
+      if (!response.ok) {
+        throw new Error("Failed to generate background");
+      }
+
+      const responseBlob = await response.blob();
       const imgUrl = URL.createObjectURL(responseBlob);
       setImage(imgUrl);
-      setInputText('');
+      setInputText("");
     } catch (err) {
-      console.error('Background Generator HF Error Details:', err);
-      setError('Oops! Something went wrong on our end. Please try again later.');
+      console.error("Background Generator Error Details:", err);
+      setError("Oops! Something went wrong on our end. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -33,15 +36,15 @@ const BackgroundGenerator = () => {
 
   const handleDownload = () => {
     if (image) {
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = image;
-      a.download = 'generated-image.png';
+      a.download = "generated-background.png";
       a.click();
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       if (!loading && inputText.trim()) {
         handleGenerate();
@@ -50,7 +53,7 @@ const BackgroundGenerator = () => {
   };
 
   return (
-    <div className="container d-flex flex-column page-e" style={{ paddingBottom: '80px' }}>
+    <div className="container d-flex flex-column page-e" style={{ paddingBottom: "80px" }}>
       <h2 className="text-center mb-4">Powerful Background Generator</h2>
       <p className="text-center mb-4">
         Enter a description to generate a beautiful background. You can download it once it's ready.
@@ -68,9 +71,9 @@ const BackgroundGenerator = () => {
             <h2>Generated Background</h2>
             <img
               src={image}
-              alt="Generated"
+              alt="Generated Background"
               className="img-fluid mt-3 set-img"
-              style={{ objectFit: 'contain' }}
+              style={{ objectFit: "contain" }}
             />
             <div className="mt-3">
               <button className="btn btn-success" onClick={handleDownload}>
@@ -84,13 +87,13 @@ const BackgroundGenerator = () => {
       <div
         className="input-container d-flex justify-content-center align-items-center"
         style={{
-          position: 'fixed',
+          position: "fixed",
           bottom: 0,
           left: 0,
           right: 0,
-          padding: '10px',
-          backgroundColor: '#f8f9fa',
-          borderTop: '1px solid #dee2e6',
+          padding: "10px",
+          backgroundColor: "#f8f9fa",
+          borderTop: "1px solid #dee2e6",
           zIndex: 1000,
         }}
       >
@@ -98,7 +101,7 @@ const BackgroundGenerator = () => {
           <input
             type="text"
             className="form-control me-2 flex-grow-1"
-            placeholder="Message Createverse "
+            placeholder="Message Createverse"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -107,9 +110,9 @@ const BackgroundGenerator = () => {
             className="btn btn-primary"
             onClick={handleGenerate}
             disabled={loading || !inputText.trim()}
-            style={{ marginLeft: '10px' }}
+            style={{ marginLeft: "10px" }}
           >
-            {loading ? 'Generating...' : 'Generate'}
+            {loading ? "Generating..." : "Generate"}
           </button>
         </div>
       </div>

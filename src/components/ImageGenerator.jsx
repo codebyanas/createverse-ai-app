@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { InferenceClient } from "@huggingface/inference";
-
-const hf = new InferenceClient(import.meta.env.VITE_HUGGING_FACE_TOKEN);
 
 const ImageGenerator = () => {
   const [inputText, setInputText] = useState("");
@@ -15,19 +12,22 @@ const ImageGenerator = () => {
     setImage(null);
 
     try {
-      const responseBlob = await hf.textToImage({
-        model: "black-forest-labs/FLUX.1-schnell",
-        inputs: inputText,
+      const response = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: inputText }),
       });
 
-      const imgUrl = URL.createObjectURL(responseBlob);
+      if (!response.ok) {
+        throw new Error("Failed to generate image");
+      }
+
+      const imageBlob = await response.blob();
+      const imgUrl = URL.createObjectURL(imageBlob);
       setImage(imgUrl);
       setInputText("");
     } catch (err) {
-      // Actual technical error is logged in the developer console
-      console.error("Hugging Face API Error Details:", err);
-
-      // Clean fallback message for clients/users
+      console.error(err);
       setError("Oops! Something went wrong on our end. Please try again later.");
     } finally {
       setLoading(false);
@@ -53,18 +53,13 @@ const ImageGenerator = () => {
   };
 
   return (
-    <div
-      className="container d-flex flex-column page-e"
-      style={{ paddingBottom: "80px" }}
-    >
+    <div className="container d-flex flex-column page-e" style={{ paddingBottom: "80px" }}>
       <h2 className="text-center mb-4">Generate Image from Text</h2>
       <p className="text-center mb-4">
-        Enter a description of the image you'd like to generate, such as
-        "Astronaut riding a horse".
+        Enter a description of the image you'd like to generate, such as "Astronaut riding a horse".
       </p>
 
       <div className="generated-image-container" style={{ flex: 1 }}>
-        {/* Error message without harsh red styling */}
         {error && (
           <div className="mt-4 text-center text-secondary" aria-live="assertive">
             <p>{error}</p>
